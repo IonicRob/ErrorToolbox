@@ -1,4 +1,4 @@
-%% ErrorCalc V2
+%% ErrorCalc
 % By Robert J Scales July 2020
 
 
