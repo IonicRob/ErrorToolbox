@@ -72,7 +72,7 @@ function OutputStructure = BasicWeightedMean(SetUp,values,errors,variables)
     
     % Creates the extra info table
     clear rowNames varNames
-    rowNames = {'Standard Deviation','Internal Error','External Error','Z','COV (%)'};
+    rowNames = {'Standard Deviation','Internal Error','External Error','Z'};
     VarNames = variables;
     VarTypes = cell(1,length(VarNames));
     VarTypes(:) = {'double'};
@@ -83,27 +83,26 @@ function OutputStructure = BasicWeightedMean(SetUp,values,errors,variables)
         [ValCol,ErrCol] = colNums(i); % Determines the variable column and the error column
         
         % This weights the above calculated data.
-        [WS]=WeightedMeanCalc(ErrorOutputArray(:,ValCol),ErrorOutputArray(:,ErrCol),ID);
+        [WeightedStruct]=WeightedMeanCalc(ErrorOutputArray(:,ValCol),ErrorOutputArray(:,ErrCol),ID);
 
         ErrorCalcTable(1:end-1,ValCol) = table(ErrorOutputArray(:,ValCol));
         ErrorCalcTable(1:end-1,ErrCol) = table(ErrorOutputArray(:,ErrCol));
-        ErrorCalcTable(end,ValCol) = table(WS.Mean);
-        ErrorCalcTable(end,ErrCol) = table(WS.StandardError);
+        ErrorCalcTable(end,ValCol) = table(WeightedStruct.Mean);
+        ErrorCalcTable(end,ErrCol) = table(WeightedStruct.StandardError);
         
-        ExtraInfoTable(1,i) = table(WS.Error);
-        ExtraInfoTable(2,i) = table(WS.InternalError);
-        ExtraInfoTable(3,i) = table(WS.ExternalError);
-        ExtraInfoTable(4,i) = table(WS.Z);
-        ExtraInfoTable(5,i) = table(WS.COV*100);
+        ExtraInfoTable(1,i) = table(WeightedStruct.Error);
+        ExtraInfoTable(2,i) = table(WeightedStruct.InternalError);
+        ExtraInfoTable(3,i) = table(WeightedStruct.ExternalError);
+        ExtraInfoTable(4,i) = table(WeightedStruct.Z);
         
         if SetUp.debugON == true
-            message = {sprintf('Current variable = %s\nWeighted mean = %.2e\nStandard Error = %.2e\nStandard Deviation = %.2e\n\nInt.Error = %.2e\nExt.Error = %.2e\nZ = %.3g\nCOV (%%) = %.3g',variables{i},WS.Mean,WS.StandardError,WS.Error,WS.InternalError,WS.ExternalError,WS.Z,WS.COV*100)};
+            message = {sprintf('Current variable = %s\nWeighted mean = %.2e\nStandard Error = %.2e\nStandard Deviation = %.2e\n\nInt.Error = %.2e\nExt.Error = %.2e\nZ = %.3g',variables{i},WeightedStruct.Mean,WeightedStruct.StandardError,WeightedStruct.Error,WeightedStruct.InternalError,WeightedStruct.ExternalError,WeightedStruct.Z)};
             DLG = helpdlg(message);
             waitfor(DLG)
         end
     end
     
-    % This is what is outputted by the function
+    % This is
     OutputStructure.ID= ID;
     OutputStructure.ErrorCalcTable = ErrorCalcTable;
     OutputStructure.ExtraInfoTable = ExtraInfoTable;

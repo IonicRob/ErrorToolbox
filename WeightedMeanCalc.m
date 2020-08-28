@@ -15,12 +15,14 @@ function [Output]=WeightedMeanCalc(Y,err_Y,Description)
         InternalError = ( (sum(W))^-1 )^0.5;
         Z = ExternalError/InternalError;
         WeightedMeanError = (ExternalError^2 + InternalError^2)^0.5;
+        
         Output.Mean = WeightedMean;
         Output.ExternalError = ExternalError;
         Output.InternalError = InternalError;
         Output.Z = Z;
-        Output.Error = WeightedMeanError;
-        Output.StandardError = WeightedMeanError/((length(Y))^0.5);
+        Output.Error = WeightedMeanError; % Standard deviation
+        Output.StandardError = WeightedMeanError/((length(Y))^0.5); % a.k.a. standard deviation of the mean
+        Output.COV = WeightedMeanError/WeightedMean; % Coeff. variation = Standard deviation / mean.
     else
         Output.Mean = Y;
         Output.ExternalError = nan;
@@ -28,6 +30,7 @@ function [Output]=WeightedMeanCalc(Y,err_Y,Description)
         Output.Z = nan;
         Output.Error = err_Y;
         Output.StandardError = err_Y/((length(Y))^0.5);
+        Output.COV = nan;
     end
     
 end
